@@ -1,0 +1,108 @@
+# 文档型参数示例，不是作者私有工作台配置，不附执行器；由 AI 映射到自己的实现。
+# 所有数值是方法起点，必须按真实实验和资源确认；修改生成新运行。
+document_only: true
+project:
+  id: demo_project
+  run: run01
+  assay: bulk_cuttag_pe
+  root: /absolute/workspace
+  samples: samples.tsv
+reference:
+  species: human
+  assembly: GRCh38_primary
+  annotation: GENCODE_v49
+  directory: /absolute/workspace/03_references/human/GRCh38_GENCODE49
+  manifest_verified: false
+  effective_genome_size: 2913022398
+  mitochondria: [chrM, MT]
+resources:
+  threads: 4
+  picard_heap_gib: 4
+  samtools_sort_threads: 2
+  samtools_sort_memory_per_thread: 512M
+  disk_budget_confirmed: false
+qc:
+  trim: true
+  adapter_r1: null  # 从试剂盒/建库资料确认，不能用示例冒充真实信息
+  adapter_r2: null
+  quality: 20
+  min_length: 30
+  max_n_fraction: 0.1
+  pair_filter: any
+alignment:
+  mode: end-to-end
+  preset: very-sensitive
+  dovetail: true
+  no_discordant: true
+  mixed_search: true
+  min_insert: 10
+  max_insert: 1000
+  seed: 20261015
+filter:
+  complete_primary_pair_required: true
+  min_mapq_both_mates: 30
+  min_fragment_bp: 10
+  max_fragment_bp: 1000
+  duplicates: retain  # 先联合标记，再决定保留/去除；不是普适政策
+  exclude_mitochondria: true
+  blacklist_fragment_overlap: true
+spikein:
+  mode: 'off'  # 引号避免某些 YAML 解析器把 off 当布尔值；可选 count/calibrate
+  reference_id: null
+  added_at_step: null
+  dose_consistency: null
+  calibration_basis: null
+  experimental_basis_confirmed: false
+  min_fragments_if_calibrating: 100  # 实现起点，不是通用实验合格线
+peaks:
+  modes: [narrow, broad]  # 按靶标选择；两模式不作质量排名
+  qvalue: 0.01
+  broad_cutoff: 0.1
+  macs_keep_dup: all
+signal:
+  unit: fragment_CPM
+  counting: one_complete_fragment_per_overlapping_bin
+  bin_bp: 25
+tss:
+  regions: protein_coding_gene_BED6
+  upstream_bp: 3000
+  downstream_bp: 3000
+  bin_bp: 25
+  gene_body_bp: 5000
+  gene_body_bin_bp: 50
+annotation:
+  enabled: true
+  tss_definition: transcript_TxDb
+  promoter_upstream_bp: 3000
+  promoter_downstream_bp: 3000
+  retain_unannotated: true
+  gene_mapping: unique_Ensembl_to_Entrez
+go:
+  enabled: true
+  ontology: ALL
+  bh_family: pooled_BP_MF_CC
+  universe_definition: eligible_host_nuclear_genes_with_GO_annotation
+  fdr: 0.05
+kegg:
+  enabled: false
+  source_and_use_confirmed: false
+  snapshot: null
+motif:
+  enabled: false
+  mode: known_only
+  reference_and_background_confirmed: false
+replicates:
+  enabled: false  # 按真实独立样本、同靶标和可比性确认后启用
+  window_bp: 10000
+  missing_to_zero: false
+report:
+  profile: delivery
+  complete_tables: true
+  preview_rows: 10
+  page_rows: 50
+  browser_and_offline_acceptance_done: false
+diagnostics:
+  enabled: false
+  sampled_unmapped_reads: 5000
+  unit: individual_read
+  seed: 20261015
